@@ -80,7 +80,7 @@ class Patchinator : CliktCommand() {
     promptForSelectedRepos(repos).forEach {
       debug("Patching ${it.name()}")
       val pr = patchRepository(githubClient, it)
-      println("PR for patching ${it.name()}: ${pr.url()}")
+      println("PR for patching ${it.name()}: ${pr.htmlUrl()}")
 
     }
   }
