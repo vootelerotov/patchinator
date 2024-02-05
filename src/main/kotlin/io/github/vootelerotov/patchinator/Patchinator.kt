@@ -86,9 +86,10 @@ class Patchinator : CliktCommand() {
   }
 
   private fun promptForSelectedRepos(repos: List<Repository>): List<Repository> {
+    val sortedRepos = repos.sortedBy { it.name() }
     val areReposSelected = editText(
       "Select repositories to patch (with 'X'):\n" +
-          repos.joinToString(separator = "\n") { "[] ${it.name()}" },
+          sortedRepos.joinToString(separator = "\n") { "[] ${it.name()}" },
     )!!.split("\n").drop(1).filter { it.isNotBlank() }.map {
       if (it.startsWith("[X]")) {
         true
@@ -99,7 +100,7 @@ class Patchinator : CliktCommand() {
       }
     }
 
-    return repos.zip(areReposSelected).filter { (_, selected) -> selected }.map { (repo, _) -> repo }
+    return sortedRepos.zip(areReposSelected).filter { (_, selected) -> selected }.map { (repo, _) -> repo }
   }
 
   private fun patchRepository(githubClient: GitHubClient, repo: Repository): PullRequest {
