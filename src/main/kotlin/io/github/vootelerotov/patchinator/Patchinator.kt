@@ -49,6 +49,12 @@ class Patchinator : CliktCommand() {
     help = "Search query for repositories. For example, prefix of repository name."
   ).default("")
 
+  private val queryLimit by option(
+    "-n",
+    "--limit",
+    help = "Maximum number of repositories to be returned from the query. Defaults to 30."
+  ).convert { it.toInt() }.default(30)
+
   private val patch by option("-p", "--patch", help = "Path to patch to apply").convert { File(it) }.required()
 
   private val debug by option("--debug", help = "Enables additional output").flag()
@@ -67,6 +73,7 @@ class Patchinator : CliktCommand() {
     val repos = githubClient.createSearchClient().repositories(
       ImmutableSearchParameters.builder()
         .q("org:$organization $searchQuery")
+        .per_page(queryLimit)
         .build()
     ).get(5, TimeUnit.SECONDS).items()!!
 
